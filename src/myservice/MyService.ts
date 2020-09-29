@@ -12,17 +12,19 @@ export default class MyService {
   }
 
   handleRequest(request: Request): Response {
-    // TODO: check request has a valid SSOToken
-    return new Response('')
+    if (this.registry.isValid(request.getSSOToken().getToken()))
+      return new Response(`hello ${request.getName()}!`)
+    return new Response('invalid')
   }
 
   handleRegister(username: string, password: string): SSOToken {
-    // TODO: register and return token
-    return new SSOToken('')
+    const token: SSOToken | undefined = this.registry.registerNewSession(username, password);
+    if (token !== undefined)
+      return token;
+    return new SSOToken("Invalid");
   }
 
   handleUnRegister(token: SSOToken) {
-    // TODO: unregister token
-    return
+    this.registry.unregister(token.getToken())
   }
 }
